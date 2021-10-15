@@ -1,1 +1,0 @@
-# This is haskell tenta solvation
