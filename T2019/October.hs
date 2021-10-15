@@ -32,7 +32,7 @@ Result: [5,16,8,4,2,1]
 unwords :: [String] -> String
 unwords []     = ""
 unwords [x]    = x
-unwords (x:xs) = x ++ " " ++ unwords xs
+unwords (x:xs) = x ++ ' ' : unwords xs
 
 
 prop_unwords :: Bool
