@@ -18,7 +18,6 @@ answer = 6
 -}
 
 --- Question 2 ---
--- TODO
 allSameOrDifferent :: Eq a => [a] -> Bool
 allSameOrDifferent []   = True
 allSameOrDifferent list = unique || same
@@ -97,6 +96,7 @@ insert x (Node l v r) | x < v     = Node (insert x l) v r
 prop_insert = insert 9 t == Node (Node Empty 3 Empty) 8 (Node (Node Empty 9 Empty) 10 Empty)
 
 --- Question 9 ---
+-- Might not work lol 🤷
 data ChessBoard = Board [[Maybe Piece]]
 data Piece = CoolKid-- the details are irrelevant here
 type Position = (Int,Int)
