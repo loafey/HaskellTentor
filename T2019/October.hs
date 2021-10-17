@@ -1,6 +1,6 @@
-import Prelude         hiding (unwords)
-import Data.List       hiding (unwords)
-import Test.QuickCheck hiding (shuffle)
+import Prelude                    hiding (unwords)
+import Data.List                  hiding (unwords)
+import Test.QuickCheck            hiding (shuffle)
 
 
 
@@ -15,12 +15,13 @@ q1 n = n : q1 (next n)
 
 {-
 
-q1 5  > 5 : q1 16                   next 5 = 3 * 5 + 1 = 16
-q1 16 > 5 : 16 : q1 8               next 16 = 16 div 2 = 8
-q1 8  > 5 : 16 : 8 : q1 4           next 8 = 8 div 2 = 4
-q1 4  > 5 : 16 : 8 : 4 : q1 2       next 4 = 4 div 2 = 2
-q1 2  > 5 : 16 : 8 : 4 : 2 : q1 1   next 2 = 2 div 1 = 2
-q1 1  > 5 : 16 : 8 : 4 : 2 : [1]    next 1 = [1]   
+q1 5     ->     5 : q1 16                   -- next 5  = 16
+q1 16    ->     5 : 16 : q1 8               -- next 16 = 8
+q1 8     ->     5 : 16 : 8 : q1 4           -- next 8  = 4 
+q1 4     ->     5 : 16 : 8 : 4 : q1 2       -- next 4  = 2
+q1 2     ->     5 : 16 : 8 : 4 : 2 : q1 1   -- next 2  = 1
+q1 1     ->     5 : 16 : 8 : 4 : 2 : [1]    -- next 1  = [1]   
+
 Result: [5,16,8,4,2,1]
 
 -}
@@ -29,6 +30,7 @@ Result: [5,16,8,4,2,1]
 
 ----------------------------------------QUESTION 2-------------------------------------------------
 
+--same thing as unwords in prelude
 unwords :: [String] -> String
 unwords []     = ""
 unwords [x]    = x
@@ -48,9 +50,9 @@ prop_unwords = unwords [] == "" &&
 
 sortLines :: FilePath -> IO ()
 sortLines file = do
-     f <- readFile file
-     let ans = unwords (sort (words f)) --Can be done using $ instead of parens
-     writeFile ("Sorted" ++ file) ans 
+     f <- readFile file --save the contents of the file to f
+     let ans = unwords (sort (words f)) --split word in to list, sort list, convert back to string 
+     writeFile ("Sorted" ++ file) ans --write to new file named "Sorted<oldfile>"
 
 
 
@@ -92,10 +94,11 @@ data Tree   = Empty | Leaf Colour | Branch Tree Tree
     deriving (Eq, Show) 
 
 autumnize :: Colour -> Tree -> Tree
-autumnize _ Empty               = Empty
-autumnize c (Leaf Green)        = Leaf c
-autumnize _ (Leaf    _ )        = Empty
-autumnize c (Branch left right) = Branch (autumnize c left) (autumnize c right) 
+autumnize _ Empty               = Empty --if empty do nothing 
+autumnize c (Leaf Green)        = Leaf c --if green, change to color c
+autumnize _ (Leaf    _ )        = Empty  --if not green, remove (change to Empty)
+autumnize c (Branch left right) = Branch (autumnize c left) (autumnize c right) {-if branch, call it recursively
+                                                                                  on children -}
 
 
 exampleTree :: Tree
@@ -110,7 +113,7 @@ prop_autumnize = autumnize Red exampleTree == Branch (Leaf Red) (Branch Empty Em
 ----------------------------------------QUESTION 7-------------------------------------------------
 
 f :: [Int] -> [Int]
-f xs = xs
+f xs = xs --some function f, details not important
 
 prop_sum_and_length :: [Int] -> Bool
 prop_sum_and_length xs = length newList <= length xs && sum newList == sum xs 
@@ -126,14 +129,14 @@ prop_sum_and_length xs = length newList <= length xs && sum newList == sum xs
 data Tree2 a = Empty2 | Node (Tree2 a) a (Tree2 a)
     deriving Show
 
---Node t1 x t2, the values in t1 are smaller than x and t2 are greater than x
+--Node t1 nodeValue t2, the values in t1 are smaller than x and t2 are greater than x
 
 member :: Ord a => a -> Tree2 a -> Bool
-member v Empty2 = False
-member v (Node left x right)
-    | v < x     = member v left
-    | v > x     = member v right
-    | otherwise = True
+member element Empty2 = False
+member element (Node left nodeValue right)
+    | element < nodeValue     = member element left   -- if the element we're checking is smaller than current node's value check left subtree only
+    | element > nodeValue     = member element right  -- if the element we're checking is greater than current node's value check right subtree only
+    | otherwise               = True                  -- if we're on a non-empty node and the element is neither greater or smaller it has to be the same
 
 prop_member x t = (member x t) == (x `elem` (flatten t))
 
@@ -147,16 +150,17 @@ flatten (Node lt x rt) = flatten lt ++ [x] ++ flatten rt
 ----------------------------------------QUESTION 9-------------------------------------------------
 
 shuffle :: [a] -> Gen [a]
-shuffle = shufHelp []
+shuffle = shufHelp [] 
 
+--helper function
 shufHelp :: [a] -> [a] -> Gen [a]
-shufHelp xs []     = pure xs
-shufHelp xs (y:ys) = do
-    n <- choose (0, length xs)
-    let ds = putAt y n xs 
-    shufHelp ds ys 
+shufHelp xs []     = pure xs   --if list is empty we're done
+shufHelp xs (first:rest) = do
+    n <- choose (0, length xs) --pick a random number between 0 and end of list
+    let updatedList = putAt first n xs      --put y at nth place in new list 
+    shufHelp updatedList rest             --do recursively 
 
-putAt :: a -> Int -> [a] -> [a]
+putAt :: a -> Int -> [a] -> [a] --put x at nth place in list xs
 putAt x n xs = h ++ (x:t)
     where
         (h,t) = splitAt n xs
