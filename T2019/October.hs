@@ -42,6 +42,11 @@ prop_unwords = unwords [] == "" &&
                unwords ["A", "good", "example"] == "A good example"
 
 
+--Using fold
+
+--very ugly but it works
+unwords' :: [String] -> String
+unwords' = foldl (\x acc -> if x == "" then x ++ acc else x ++ " " ++ acc) ""
 
 
 ----------------------------------------QUESTION 3-------------------------------------------------
