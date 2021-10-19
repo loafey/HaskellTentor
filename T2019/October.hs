@@ -1,6 +1,6 @@
-import Prelude                    hiding (unwords)
-import Data.List                  hiding (unwords)
-import Test.QuickCheck            hiding (shuffle)
+import      Prelude               hiding (unwords)
+import      Data.List             hiding (unwords)
+import      Test.QuickCheck       hiding (shuffle)
 
 
 
@@ -41,15 +41,22 @@ prop_unwords :: Bool
 prop_unwords = unwords [] == "" &&
                unwords ["Hello"] == "Hello" &&
                unwords ["Hello", "world"] == "Hello world" &&   
-               unwords ["A", "good", "example"] == "A good example"
+               unwords ["A", "good", "example"] == "A good example" &&
+               unwords' [] == "" &&
+               unwords' ["Hello"] == "Hello" &&
+               unwords' ["Hello", "world"] == "Hello world" &&   
+               unwords' ["A", "good", "example"] == "A good example"
+ 
 
 
 --Using fold
 
---very ugly but it works
 unwords' :: [String] -> String
-unwords' = foldl (\x acc -> if x == "" then x ++ acc else x ++ " " ++ acc) ""
-
+unwords' = foldl space ""
+    where
+        space :: String -> String -> String
+        space x acc | null x    = x ++ acc --if empty string
+                    | otherwise = x ++ " " ++ acc
 
 ----------------------------------------QUESTION 3-------------------------------------------------
 
