@@ -35,11 +35,14 @@ lookupAll key ((k,v):kvs)
 
 test = [("lucky",6),("unlucky",7),("lucky",8),("beastly",666)]
 
-prop_lookupTest = lookupAll "lucky" [("lucky",6),("unlucky",7),("lucky",8),("beastly",666)] == lookupAll' "lucky" [("lucky",6),("unlucky",7),("lucky",8),("beastly",666)]
+prop_lookupTest = lookupAll "lucky" [("lucky",6),("unlucky",7),("lucky",8),("beastly",666)] 
+                  ==
+                  lookupAll' "lucky" [("lucky",6),("unlucky",7),("lucky",8),("beastly",666)]
 
 
 lookupAll' :: Eq a => a -> [(a,b)] -> [b]
-lookupAll' key list = [v | (k,v) <- list, k == key] --only save the value (v), but it only when the key is correct (k == key)
+lookupAll' key list = [v | (k,v) <- list, k == key] {-only save the value (v) 
+                                                    but only when the key is correct (k == key) -}
 
 
 
@@ -88,8 +91,11 @@ convert (Mul left right) = BinEx MulOp (convert left) (convert right)
 
 prop_lookup :: (Eq a, Eq b) => a -> [(a,b)] -> Bool
 prop_lookup key map = case lookup key map of
-                        Nothing -> lookupAll key map == [] --looking up in an empty list should give empty list or nothing
-                        (Just x) -> head (lookupAll key map) == x --finding an element with lookup should be the same element as the first lookupAll finds
+                        --looking up in an empty list should give empty list or nothing
+                        Nothing -> lookupAll key map == [] 
+                        (Just x) -> head (lookupAll key map) == x 
+                        --finding an element with lookup should be the 
+                        --same element as the first lookupAll finds
 
 
 
@@ -141,11 +147,12 @@ type Answer   = String
 attributes :: DTree -> [(Answer,[(Question,Bool)])]
 attributes t = map reverseSndOfTuple $ listAllDecision t []
     where        
-        --collect all decisions and answers in a list. All answers in a left subtree are true and right are false.
+        --collect all decisions and answers in a list. 
+        --All answers in a left subtree are true and right are false.
         --using a buffer to help
- 
         listAllDecision :: DTree -> [(Question, Bool)] -> [(Answer, [(Question, Bool)])]
-        listAllDecision (Q ques left right) buffer  = listAllDecision left ((ques, True):buffer) ++ listAllDecision right ((ques, False):buffer)
+        listAllDecision (Q ques left right) buffer  = listAllDecision left ((ques, True):buffer) ++ 
+                                                      listAllDecision right ((ques, False):buffer)
         listAllDecision (Decision answer)   buffer  = [(answer, buffer)]
         
         reverseSndOfTuple :: (a,[b]) -> (a,[b])
@@ -158,8 +165,9 @@ ex = Q "Is it raining" wet notWet
         notWet = Q "Is it more than 2km" (Decision "Cycle") (Decision "Walk")
 
 prop_attributes :: Bool
-prop_attributes = attributes ex == [
-                                    ("Take the bus", [("Is it raining", True)]),
-                                    ("Cycle", [("Is it raining", False), ("Is it more than 2km", True)]),
-                                    ("Walk", [("Is it raining", False), ("Is it more than 2km", False)])
-                                   ]
+prop_attributes = 
+    attributes ex == 
+            [ ("Take the bus", [("Is it raining", True)]),
+              ("Cycle", [("Is it raining", False), ("Is it more than 2km", True)]),
+              ("Walk", [("Is it raining", False), ("Is it more than 2km", False)])
+            ]
