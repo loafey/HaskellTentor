@@ -128,7 +128,8 @@ spam :: Gen String
 spam = do
     name <- elements names --pick one element from the list names
     email <- elements emailProviders --pick one element from the list emailProviders
-    let complete = name ++ "@" ++ email ++ ".com" --combine to one complete emailaddress
+    int <- choose (0,99) --random int in the range of 0 - 99
+    let complete = name ++ (show int) ++ "@" ++ email ++ ".com" --combine to one complete emailaddress
     pure complete --wrap it with Gen monad. return complete works aswell, pure == return (ish)
 
 
