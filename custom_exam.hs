@@ -1,3 +1,6 @@
+import Test.QuickCheck
+import Data.List (sort)
+
 ----------------
 ----------------
 ---QUESTION 1---
@@ -32,7 +35,7 @@ Result: [[1,1,1,1],[1,1],[1]]
 
 type WeekNumber = Int
 rainfall :: WeekNumber -> Double    -- assume this function exists
-rainfall n = n --so dryWeeks can be run
+rainfall n = fromIntegral n   --so dryWeeks can be run
 
 dryWeeks :: WeekNumber -> Int
 dryWeeks n | n < 1          = 0
@@ -68,7 +71,7 @@ data Op = Add | Mul | Subtract
 removeSub :: Expr -> Expr
 removeSub X                      = X
 removeSub (Num i)                = Num i
-removeSub (BinOp Subtract e1 e2) = BinOp Add (removeSub e1) (BinOp Mul (Num (-1)) (removeSub e2) --(5 - 3) => (5 + (3 * -1))
+removeSub (BinOp Subtract e1 e2) = BinOp Add (removeSub e1) (BinOp Mul (Num (-1)) (removeSub e2)) --(5 - 3) => (5 + (3 * -1))
 removeSub (BinOp o e1 e2)        = BinOp o (removeSub e1) (removeSub e2) --recursively call the function on the children
 
 prop_removeSub = removeSub (BinOp Subtract (Num 100) X) == BinOp Add (Num 100) (BinOp Mul (Num (-1)) X)
