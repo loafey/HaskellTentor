@@ -63,7 +63,7 @@ unwords' = foldl space ""
 sortLines :: FilePath -> IO ()
 sortLines file = do
      f <- readFile file --save the contents of the file to f
-     let ans = unwords (sort (words f)) --split word in to list, sort list, convert back to string 
+     let ans = unlines (sort (lines f)) --split word in to list, sort list, convert back to string 
      writeFile ("Sorted" ++ file) ans --write to new file named "Sorted<oldfile>"
 
 
