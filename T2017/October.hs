@@ -47,7 +47,7 @@ data Op = Add | Mul | Subtract
 removeSub :: Expr -> Expr
 removeSub X                      = X
 removeSub (Num i)                = Num i
-removeSub (BinOp Subtract e1 e2) = BinOp Add e1 (BinOp Mul (Num (-1)) e2)
+removeSub (BinOp Subtract e1 e2) = BinOp Add (removeSub e1) (BinOp Mul (Num (-1)) (removeSub e2)
 removeSub (BinOp o e1 e2)        = BinOp o (removeSub e1) (removeSub e2)
 
 prop_removeSub = removeSub (BinOp Subtract (Num 100) X) == BinOp Add (Num 100) (BinOp Mul (Num (-1)) X)
