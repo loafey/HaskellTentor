@@ -1,7 +1,8 @@
 # Solutions to a variety of old exams in DIT440
-## Try on your own first :) 🦍
 
-To download all files do:
+🦍
+
+## To download all files do:
 
 Change directory to where you want the project.
 ```
