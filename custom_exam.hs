@@ -143,7 +143,7 @@ spam = do
     email        <- elements emailProviders --pick one element from the list emailProviders
     number       <- choose (0,99) :: Gen Int --random int in the range of 0 - 99
     numberOrNot  <- elements ["", show number]
-    let complete = name ++ (show number) ++ "@" ++ email ++ ".com" --combine to one complete emailaddress
+    let complete = name ++ numberOrNot ++ "@" ++ email ++ ".com" --combine to one complete emailaddress
     pure complete --wrap it with Gen monad. return complete works aswell, pure == return (ish)
 
 
