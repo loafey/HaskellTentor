@@ -11,5 +11,3 @@ Change directory to where you want the project.
 git clone git@github.com:samhamnam/HaskellTentor.git
 ```
 custom_exam.hs contains all questions we did live 
-
-Boom, done!
